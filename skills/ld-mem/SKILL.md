@@ -39,6 +39,11 @@ claude-mem already reinjects recent decisions/discoveries at every fresh start (
 - **Project name:** `basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)"`.
 - **Branch slug:** `git rev-parse --abbrev-ref HEAD 2>/dev/null` → replace `/` with `-` (e.g. `feat/GRTTL4C-274` → `feat-GRTTL4C-274`). No git → `no-git`.
 - **Session-short:** the 8-char prefix of the session UUID. Derive it from your scratchpad path — it's the basename of the directory that *contains* your scratchpad dir (`.../<UUID>/scratchpad` → take `<UUID>`, first 8 chars). If you can't resolve it, fall back to a short timestamp (`date +%H%M%S`) and say so.
+- **Session name:** the user-set session name, which `/clear` wipes. Look it up by full UUID in the live session index — its only home, keyed on `sessionId`:
+  ```bash
+  python3 -c "import json,glob;print(next((json.load(open(f)).get('name','') for f in glob.glob('$HOME/.claude/sessions/*.json') if json.load(open(f)).get('sessionId')=='<FULL_UUID>'),''))"
+  ```
+  Empty result = unnamed session → skip the name everywhere below.
 - **Target path:** `~/.claude/ld-mem/<project>/<branch-slug>__<session-short>.md`. `mkdir -p` the project dir.
 
 ### 2. Detect canonical files (don't assume)
@@ -52,6 +57,7 @@ Reconstruct, from this session, what a fresh context needs to resume. Write the 
 ```markdown
 # Handoff — <project> / <branch> (sesión <session-short>)
 _actualizado: <date '+%Y-%m-%d %H:%M'>_
+_sesión: <session name — omit this line if unnamed>_
 
 ## Objetivo
 <qué se está haciendo, 1–2 líneas>
@@ -88,12 +94,15 @@ Overwrite the target path with the composed handoff. Confirm the write.
 
 ### 6. Emit the re-hydrate prompt
 
+The re-hydrate prompt is a **read-and-stage** order, never a **go** order. The handoff's "Próximo paso" is *information about where work stopped* — not authorization to resume it. A fresh context that reads "Seguí desde Próximo paso" tends to start editing immediately; that's the failure mode this wording must prevent. The plan→align→execute contract still holds across `/clear`: after reading, the assistant reports it's ready and **waits for an explicit go** before touching anything.
+
 Print:
 - A one-line recap: which file was written, which sections it has.
 - Then the ready-to-paste block, on its own, e.g.:
   ```
-  Retomá la sesión: leé ~/.claude/ld-mem/<project>/<branch>__<sid>.md — tiene objetivo, estado, próximo paso y decisiones. Seguí desde "Próximo paso".
+  Retomá la sesión: leé ~/.claude/ld-mem/<project>/<branch>__<sid>.md — tiene objetivo, estado, próximo paso y decisiones. SOLO leé y preparate: NO ejecutes ni edites nada todavía. Cuando termines de leer, resumí dónde quedó y cuál sería el próximo paso, y esperá mi OK explícito antes de tocar nada.
   ```
+  If the session was named, append to that block: `(renombrá la sesión a "<name>" — /clear lo borró)`.
 - A reminder: **"Ahora corré `/clear`, después pegá el prompt de arriba."**
 
 **Then stop.** You run `/clear` yourself; the skill never does.
