@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-kit",
+  "description": "Leandro's personal Claude Code skills and plugins.",
+  "owner": {
+    "name": "Leandro",
+    "url": "https://github.com/laendoor"
+  },
+  "plugins": [
+    {
+      "name": "ld-prosa",
+      "description": "Posture-switching communication style — infers register instead of one fixed tone.",
+      "source": "./plugins/ld-prosa",
+      "category": "productivity"
+    }
+  ]
+}
