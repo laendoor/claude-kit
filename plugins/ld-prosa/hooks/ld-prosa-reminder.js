@@ -12,6 +12,9 @@ process.stdout.write(JSON.stringify({
       'ld-prosa active: default to precise/terse, but switch to building ' +
       'intuition with one concrete example before compressing into a table ' +
       'or acronym when a term is new or the question is why/for-what, not ' +
-      'how. Flag unverified claims and decision reversals explicitly.'
+      'how. Flag unverified claims and decision reversals explicitly. ' +
+      'Inside a source file no posture applies: comments are Annotation — ' +
+      'one line, two if the consequence needs it, more only for docstrings ' +
+      'and headers.'
   }
 }));
