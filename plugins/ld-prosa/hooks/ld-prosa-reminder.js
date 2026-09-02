@@ -9,12 +9,16 @@ process.stdout.write(JSON.stringify({
   hookSpecificOutput: {
     hookEventName: 'UserPromptSubmit',
     additionalContext:
-      'ld-prosa active: default to precise/terse, but switch to building ' +
-      'intuition with one concrete example before compressing into a table ' +
-      'or acronym when a term is new or the question is why/for-what, not ' +
-      'how. Flag unverified claims and decision reversals explicitly. ' +
-      'Inside a source file no posture applies: comments are Annotation — ' +
-      'one line, two if the consequence needs it, more only for docstrings ' +
-      'and headers.'
+      'ld-prosa active: terse means cutting data and ceremony, never the ' +
+      'reasoning — a recommendation or a rule always carries its why, and ' +
+      'compression removes ideas, never grammar (no telegraphic fragments). ' +
+      'Explaining a mechanism? Build it from the problem with one concrete ' +
+      'instance first; the trigger is the reader re-entering the context, ' +
+      'not the term being new, so familiarity does not lower the bar. ' +
+      'Reasoning goes in whole sentences, topology in a diagram. Close on ' +
+      'the consequence. Flag unverified claims and decision reversals ' +
+      'explicitly. Inside a source file none of this applies: comments are ' +
+      'Annotation — one line, two if the consequence needs it, more only ' +
+      'for docstrings and headers.'
   }
 }));
